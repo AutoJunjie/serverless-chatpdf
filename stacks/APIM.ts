@@ -155,10 +155,10 @@ export function API({stack}: StackContext) {
     }
   });
 
-  let url = ""
-  if (api.url.endsWith("//")) {
-    url = api.url.slice(0, -1);
-  }
+  //let url = ""
+  //if (api.url.endsWith("//")) {
+  //  url = api.url.slice(0, -1);
+  //}
 
   const site = new StaticSite(stack, "ReactSite", {
     path: "packages/frontend",
@@ -167,7 +167,7 @@ export function API({stack}: StackContext) {
     environment: {
       REACT_APP_API_URL: api.url,
       VITE_REGION: "us-east-1",
-      VITE_API_ENDPOINT: url,
+      VITE_API_ENDPOINT: "https://kkorcrj2l8.execute-api.us-east-1.amazonaws.com/prod",
       VITE_USER_POOL_ID: "us-east-1_j7oks4kpJ",
       VITE_USER_POOL_CLIENT_ID: "5mot32mbqoai7dve99gmiaahuk"
     },
