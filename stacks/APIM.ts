@@ -110,6 +110,12 @@ export function API({stack}: StackContext) {
     timeout: 180,
   });
 
+  const addConversation = new Function(stack, "addConversation", {
+    runtime: "container",
+    handler: "packages/functions/src/add_conversation",
+    timeout: 180,
+  });
+
   //const GenerateEmbeddings = new Function(stack, "GenerateEmbeddings", {
   //  //runtime: "container",
   //  handler: "packages/functions/src/generate_embeddings/main.lambda_hanlder",
@@ -121,7 +127,7 @@ export function API({stack}: StackContext) {
   const api = new ApiGatewayV1Api(stack, "Api", {
     routes: {
       "POST /doc/{documentid}": {
-        function: "packages/functions/src/add_conversation/main.lambda_handler",
+        function: addConversation,
     },         
       "GET /generate_presigned_url": {
         function: "packages/functions/src/generate_presigned_url/main.lambda_handler",
