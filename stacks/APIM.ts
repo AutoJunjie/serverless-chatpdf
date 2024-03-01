@@ -116,6 +116,12 @@ export function API({stack}: StackContext) {
     timeout: 180,
   });
 
+  const generateResponse = new Function(stack, "generateResponse", {
+    runtime: "container",
+    handler: "packages/functions/src/generate_response",
+    timeout: 180,
+  });
+
   //const GenerateEmbeddings = new Function(stack, "GenerateEmbeddings", {
   //  //runtime: "container",
   //  handler: "packages/functions/src/generate_embeddings/main.lambda_hanlder",
@@ -133,7 +139,7 @@ export function API({stack}: StackContext) {
         function: "packages/functions/src/generate_presigned_url/main.lambda_handler",
     },
       "POST /{documentid}/{conversationid}": {
-        function: "packages/functions/src/generate_response/main.lambda_handler",
+        function: generateResponse,
     },
       "GET /doc": {
         function: "packages/functions/src/get_all_documents/main.lambda_handler",
