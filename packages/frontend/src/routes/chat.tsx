@@ -130,10 +130,15 @@ const Document: React.FC = () => {
           </div>
           <div className="flex-1 p-4">
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.js">
-              <Viewer
-                fileUrl='https://arxiv.org/pdf/1706.03762.pdf'
-                plugins={[defaultLayoutPluginInstance]}
-              />
+              <div
+                style={{
+                    border: '1px solid rgba(0, 0, 0, 0.3)',
+                    height: '750px',
+                }}>
+                <Viewer
+                  fileUrl='https://arxiv.org/pdf/1706.03762.pdf'
+                />
+              </div>
             </Worker>
           </div>
           <div className="w-80 border border-gray-200 rounded-lg">
