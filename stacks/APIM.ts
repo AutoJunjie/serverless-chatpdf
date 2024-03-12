@@ -122,11 +122,23 @@ export function API({stack}: StackContext) {
     timeout: 180,
   });
 
-  //const GenerateEmbeddings = new Function(stack, "GenerateEmbeddings", {
-  //  //runtime: "container",
-  //  handler: "packages/functions/src/generate_embeddings/main.lambda_hanlder",
-  //  timeout: 180,
-  //});
+  const getDocument = new Function(stack, "getDocument", {
+    runtime: "container",
+    handler: "packages/functions/src/get_document",
+    timeout: 180,
+  });
+
+  const getAllDocuments = new Function(stack, "getAllDocuments", {
+    runtime: "container",
+    handler: "packages/functions/src/get_all_documents",
+    timeout: 180,
+  });
+
+  const generatePresignedUrl = new Function(stack, "generatePresignedUrl", {
+    runtime: "container",
+    handler: "packages/functions/src/generate_presigned_url",
+    timeout: 180,
+  });
 
   EmbeddingQueue.addConsumer(stack, GenerateEmbeddings);
 
@@ -136,16 +148,16 @@ export function API({stack}: StackContext) {
         function: addConversation,
     },         
       "GET /generate_presigned_url": {
-        function: "packages/functions/src/generate_presigned_url/main.lambda_handler",
+        function: generatePresignedUrl,
     },
       "POST /{documentid}/{conversationid}": {
         function: generateResponse,
     },
       "GET /doc": {
-        function: "packages/functions/src/get_all_documents/main.lambda_handler",
+        function: getAllDocuments,
     },
       "GET /doc/{documentid}/{conversationid}": {
-        function: "packages/functions/src/get_document/main.lambda_handler",
+        function: getDocument,
     },   
   },
     cdk: {
@@ -167,7 +179,7 @@ export function API({stack}: StackContext) {
     environment: {
       REACT_APP_API_URL: api.url,
       VITE_REGION: "us-east-1",
-      VITE_API_ENDPOINT: "https://kkorcrj2l8.execute-api.us-east-1.amazonaws.com/prod",
+      VITE_API_ENDPOINT: "https://"+ api.restApiId + ".execute-api.us-east-1.amazonaws.com/prod",
       VITE_USER_POOL_ID: "us-east-1_j7oks4kpJ",
       VITE_USER_POOL_CLIENT_ID: "5mot32mbqoai7dve99gmiaahuk"
     },

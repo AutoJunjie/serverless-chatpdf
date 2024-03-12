@@ -26,6 +26,12 @@ def set_doc_status(user_id, document_id, status):
 
 @logger.inject_lambda_context(log_event=True)
 def lambda_handler(event, context):
+
+    if isinstance(event, bytes):
+        print("byte type, convert to string")
+        event = event.decode('utf-8')
+        event = json.loads(event)
+        
     event_body = json.loads(event["Records"][0]["body"])
     document_id = event_body["documentid"]
     user_id = event_body["user"]

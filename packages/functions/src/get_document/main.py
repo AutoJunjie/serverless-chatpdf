@@ -19,6 +19,11 @@ def lambda_handler(event, context):
     #user_id = event["requestContext"]["authorizer"]["claims"]["sub"]    
     user_id = "043824b8-5041-70e8-94cc-b87448d41a6a"
 
+    if isinstance(event, bytes):
+        print("byte type, convert to string")
+        event = event.decode('utf-8')
+        event = json.loads(event)
+
     document_id = event["pathParameters"]["documentid"]
     conversation_id = event["pathParameters"]["conversationid"]
 

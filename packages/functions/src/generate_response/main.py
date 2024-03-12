@@ -17,9 +17,15 @@ s3 = boto3.client("s3")
 logger = Logger()
 
 
-#@logger.inject_lambda_context(log_event=True)
+@logger.inject_lambda_context(log_event=True)
 def lambda_handler(event, context):
     try:
+
+        if isinstance(event, bytes):
+            print("byte type, convert to string")
+            event = event.decode('utf-8')
+            event = json.loads(event)
+
         event_body = json.loads(event["body"])
         file_name = event_body["fileName"]
         human_input = event_body["prompt"]
@@ -66,12 +72,8 @@ def lambda_handler(event, context):
             return_source_documents=True,
         )
 
-        #res = qa({"question": human_input})
-        #print("***********response**********")
-        #print(res)
-        #print(json.dumps(res["answer"]))
-
-        #logger.info(res)
+        res = qa({"question": human_input})
+        logger.info(res)
 
         return {
             "statusCode": 200,
@@ -81,9 +83,7 @@ def lambda_handler(event, context):
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "*",
             },
-            #"body": json.dumps(res["answer"]),
-            "body": "answer",
-
+            "body": json.dumps(res["answer"]),
         }
     except Exception as e:
         logger.error(f"An error occurred: {e}")

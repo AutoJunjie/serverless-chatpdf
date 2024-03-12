@@ -6,6 +6,16 @@ import ChatSidebar from "../components/ChatSidebar";
 import ChatMessages from "../components/ChatMessages";
 import LoadingGrid from "../../public/loading-grid.svg";
 
+// Core viewer
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+
+// Plugins
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+
+// Import styles
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
 const Document: React.FC = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -17,6 +27,9 @@ const Document: React.FC = () => {
     "idle" | "loading"
   >("idle");
   const [prompt, setPrompt] = useState("");
+
+  // Create new plugin instance
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   const fetchData = async (conversationid = params.conversationid) => {
     setLoading("loading");
@@ -98,29 +111,41 @@ const Document: React.FC = () => {
   };
 
   return (
-    <div className="">
+    <div className="flex flex-col h-screen">
       {loading === "loading" && !conversation && (
         <div className="flex flex-col items-center mt-6">
           <img src={LoadingGrid} width={40} />
         </div>
       )}
       {conversation && (
-        <div className="grid grid-cols-12 border border-gray-200 rounded-lg">
-          <ChatSidebar
-            conversation={conversation}
-            params={params}
-            addConversation={addConversation}
-            switchConversation={switchConversation}
-            conversationListStatus={conversationListStatus}
-          />
-          <ChatMessages
-            prompt={prompt}
-            conversation={conversation}
-            messageStatus={messageStatus}
-            submitMessage={submitMessage}
-            handleKeyPress={handleKeyPress}
-            handlePromptChange={handlePromptChange}
-          />
+        <div className="flex flex-row h-full">
+          <div className="w-64 border border-gray-200 rounded-lg">
+            <ChatSidebar
+              conversation={conversation}
+              params={params}
+              addConversation={addConversation}
+              switchConversation={switchConversation}
+              conversationListStatus={conversationListStatus}
+            />
+          </div>
+          <div className="flex-1 p-4">
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.js">
+              <Viewer
+                fileUrl='https://arxiv.org/pdf/1706.03762.pdf'
+                plugins={[defaultLayoutPluginInstance]}
+              />
+            </Worker>
+          </div>
+          <div className="w-80 border border-gray-200 rounded-lg">
+            <ChatMessages
+              prompt={prompt}
+              conversation={conversation}
+              messageStatus={messageStatus}
+              submitMessage={submitMessage}
+              handleKeyPress={handleKeyPress}
+              handlePromptChange={handlePromptChange}
+            />
+          </div>
         </div>
       )}
     </div>
